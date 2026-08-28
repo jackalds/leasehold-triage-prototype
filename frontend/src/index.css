@@ -203,6 +203,41 @@ button:focus-visible {
   justify-content: center;
 }
 
+.category-details {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.category-details h3 {
+  color: var(--text-h);
+  font-size: 18px;
+  margin: 0;
+}
+
+.urgent-note {
+  color: #c0392b;
+  font-weight: 500;
+}
+
+.ambiguous-matches {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left;
+}
+
+.ambiguous-matches > .category-details {
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.escape-hatch {
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;
