@@ -18,6 +18,7 @@ function CategoryDetails({ category, showName }) {
 				<p>
 					<a href={category.guide_link} target="_blank" rel="noreferrer">
 						Read the full guide
+						<span className="visually-hidden"> (opens in a new tab)</span>
 					</a>
 				</p>
 			)}
@@ -75,10 +76,12 @@ function ResultsScreen({ result }) {
 					Whatever your situation, you can always{" "}
 					<a href={ADVISER_LINK} target="_blank" rel="noreferrer">
 						speak to an adviser
+						<span className="visually-hidden"> (opens in a new tab)</span>
 					</a>{" "}
 					or{" "}
 					<a href={ALL_TOPICS_LINK} target="_blank" rel="noreferrer">
 						browse all topics
+						<span className="visually-hidden"> (opens in a new tab)</span>
 					</a>
 					.
 				</p>

@@ -94,14 +94,12 @@ describe("ResultsScreen", () => {
 			/>
 		);
 
-		expect(screen.getByRole("link", { name: "speak to an adviser" })).toHaveAttribute(
-			"href",
-			"https://www.lease-advice.org/contact-us/"
-		);
-		expect(screen.getByRole("link", { name: "browse all topics" })).toHaveAttribute(
-			"href",
-			"https://www.lease-advice.org/"
-		);
+		expect(
+			screen.getByRole("link", { name: /speak to an adviser/ })
+		).toHaveAttribute("href", "https://www.lease-advice.org/contact-us/");
+		expect(
+			screen.getByRole("link", { name: /browse all topics/ })
+		).toHaveAttribute("href", "https://www.lease-advice.org/");
 	});
 
 	it("moves focus to the results heading so screen reader and keyboard users land on it", () => {
