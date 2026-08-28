@@ -121,3 +121,28 @@ slice, T4-T5 make it usable, T6 hardens it.
   working by seeing "ok" render in the browser, not just assuming the fetch would
   succeed; generated `requirements.txt` from my own local `pip freeze` rather than
   accepting a guessed dependency list.
+
+**T2 - Category content model in Wagtail**
+
+- What helped: used AI to scaffold the `EnquiryCategory` snippet model, serializer,
+  viewset/router wiring, and the data migration seeding the 7 categories plus "not
+  sure" — boilerplate with one obviously-correct shape.
+- What I verified myself: ran `makemigrations`/`migrate` and checked
+  `EnquiryCategory.objects.count() == 8` in the Django shell rather than trusting the
+  migration file as written; started the dev server and hit `GET /api/categories/`
+  and `/api/categories/<slug>/` directly to confirm the API returns real data;
+  confirmed the model appears in `get_snippet_models()` so it's genuinely editable in
+  the Wagtail admin, not just decorated with `@register_snippet` and assumed to work.
+- What I caught and rejected: noticed `backend/requirements.txt` had been silently
+  overwritten with an unrelated package list (yt-dlp, PlexAPI, etc.) — looked like a
+  `pip freeze` run against the wrong environment. Checked the project's actual venv
+  was still Django 5.2.17/Wagtail 8.0 before reverting the file, rather than
+  assuming either version was correct.
+- What I got wrong and fixed: the first-pass `guide_link` URLs were built by
+  pattern-matching the path segments named in the Part 1 plan (e.g.
+  `costs-and-charges/service-charges`) under a guessed `/advice-guide/` prefix,
+  without checking they resolved. All 7 came back `403` from a plain `curl` (bot
+  blocking), which could have masked the real problem — retried with a browser
+  user-agent and got genuine `404`s. Read the live site's actual navigation in the
+  browser, found the real paths (no `/advice-guide/` prefix), corrected the seed
+  migration, and re-verified all 7 URLs return `200` before treating it as done.
