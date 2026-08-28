@@ -28,6 +28,19 @@ Runs at http://localhost:8000 — health check at http://localhost:8000/api/heal
 
 Runs at http://localhost:5173
 
+## Running the tests
+
+Backend (matcher unit tests + API tests — happy path, no-match, scenario id):
+
+    cd backend
+    venv\Scripts\Activate.ps1   # macOS/Linux: source venv/bin/activate
+    python manage.py test
+
+Frontend (component tests for form submission and results rendering):
+
+    cd frontend
+    npm run test
+
 ## What's deliberately left out
 
 _(filled in as the build progresses)_
