@@ -86,13 +86,38 @@ h2 {
   font-size: 24px;
   line-height: 118%;
   letter-spacing: -0.24px;
-  margin: 0 0 8px;
+  margin: 0 0 16px;
   @media (max-width: 1024px) {
     font-size: 20px;
   }
 }
 p {
   margin: 0;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  padding: 0 20px 40px;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  max-width: 560px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
 }
 
 code,
@@ -132,6 +157,10 @@ textarea[aria-invalid="true"] {
   border-color: #c0392b;
 }
 
+form button[type="submit"] {
+  display: block;
+}
+
 button {
   font: inherit;
   cursor: pointer;
@@ -156,12 +185,18 @@ button:focus-visible {
 .field-error {
   color: #c0392b;
   font-weight: 500;
-  margin-top: 8px;
+}
+
+.scenarios {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .scenarios ul {
   list-style: none;
   padding: 0;
+  margin: 0;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;

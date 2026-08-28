@@ -16,7 +16,13 @@ function TriageForm({ onResult }) {
 	useEffect(() => {
 		fetch(`${API_BASE}/categories/`)
 			.then((response) => response.json())
-			.then(setScenarios)
+			.then((categories) =>
+				setScenarios(
+					[...categories].sort((a, b) =>
+						a.slug === "not-sure" ? 1 : b.slug === "not-sure" ? -1 : 0
+					)
+				)
+			)
 			.catch(() => setScenarios([]));
 	}, []);
 
