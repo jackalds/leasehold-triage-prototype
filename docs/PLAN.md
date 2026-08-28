@@ -104,3 +104,20 @@ slice, T4-T5 make it usable, T6 hardens it.
   navigation rather than keeping guessed ones; cut "park homes" as a category after
   confirming LEASE runs it as a separate subsite.
 - Adjusted plan to take account of limitations and further instructions outlined by Part 2
+
+**T1 - Repo & tooling scaffold**
+
+- What helped: used AI to generate the Wagtail/DRF/Vite boilerplate (health-check view,
+  URL wiring, `App.jsx` fetch call, README skeleton) — the kind of first-draft code
+  that has one obviously-correct shape and isn't worth typing from scratch.
+- What I rejected/changed: the first venv-activation command given was bash syntax
+  (`source venv/bin/activate`), which doesn't work on Windows PowerShell — swapped for
+  the PowerShell-specific `Activate.ps1` command instead.
+- What I considered: asked about Oxlint vs ESLint; went with ESLint on the stated
+  reasoning that `jsx-a11y` accessibility coverage matters more for this brief than
+  Oxlint's speed advantage, rather than defaulting to whichever was suggested first.
+- What I verified myself: ran the backend and actually hit `/api/health/` and
+  `/admin/` rather than trusting the code as written; confirmed CORS was genuinely
+  working by seeing "ok" render in the browser, not just assuming the fetch would
+  succeed; generated `requirements.txt` from my own local `pip freeze` rather than
+  accepting a guessed dependency list.
