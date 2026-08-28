@@ -236,3 +236,37 @@ slice, T4-T5 make it usable, T6 hardens it.
   centered body text used elsewhere on the page — a deliberate, narrowly
   scoped deviation, since centered multi-line paragraphs are harder to read
   for the varying-literacy/possible-disability audience assumed in the plan.
+
+**T6 - Automated tests**
+
+- What I checked first: the backend already had matcher unit tests and API
+  tests covering the happy path, no-match path, and scenario-id paths from
+  T3 — ran `python manage.py test` and got a real `OK` (17 tests) rather
+  than assuming T3's coverage still matched the plan's T6 requirement, so
+  the only genuinely new work was the frontend side.
+- What helped: used AI to scaffold the Vitest + React Testing Library setup
+  (`vite.config.js` test block, `setupTests.js`, `TriageForm.test.jsx`,
+  `ResultsScreen.test.jsx`) — boilerplate with one obviously-correct shape
+  once the components already existed from T4/T5.
+- What I verified myself: ran `npm run test` and watched it fail first
+  (multiple `Service charges` headings matching across tests) before
+  fixing it, rather than writing tests I assumed would pass. The cause was
+  Testing Library not un-mounting between tests under Vitest by default —
+  added `afterEach(cleanup)` to `setupTests.js` rather than papering over
+  it with more specific queries in every test. Re-ran and got a real pass
+  (9 tests) before treating it as done.
+- What I caught and fixed: `npm run lint` failed on `global.fetch` in the
+  new test file (`no-undef` — the project's ESLint config doesn't include
+  Node/Vitest globals). Fixed by using `globalThis.fetch` instead of
+  widening the lint config for a codebase-wide global just to suit one
+  test file.
+- What I decided: covered form submission (free text happy path,
+  empty-submit validation with refocus, scenario-button submission) and
+  results rendering (single match, urgent note, ambiguous multi-match,
+  not-sure routing, the persistent escape hatch, and focus moving to the
+  results heading) rather than testing implementation details like
+  internal state — matches what the plan's T6 ticket actually asks for
+  ("component test for form submission and results rendering").
+- Documented the run commands for both suites in the README rather than
+  leaving them implicit, per the ticket's "Documented run commands"
+  requirement.
