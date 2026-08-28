@@ -8,5 +8,6 @@ router.register("categories", views.EnquiryCategoryViewSet, basename="category")
 
 urlpatterns = [
     path("health/", views.health_check, name="health-check"),
+    path("triage/", views.triage, name="triage"),
     path("", include(router.urls)),
 ]

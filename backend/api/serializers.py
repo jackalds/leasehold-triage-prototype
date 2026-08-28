@@ -16,3 +16,9 @@ class EnquiryCategorySerializer(serializers.ModelSerializer):
             "guide_link",
             "is_urgent",
         ]
+
+
+class TriageMatchSerializer(serializers.Serializer):
+    category = EnquiryCategorySerializer()
+    score = serializers.IntegerField(allow_null=True)
+    confidence = serializers.FloatField()
