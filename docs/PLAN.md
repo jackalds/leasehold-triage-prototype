@@ -207,3 +207,32 @@ slice, T4-T5 make it usable, T6 hardens it.
   it fell alphabetically from the API response — content ordering concerns
   handled client-side rather than changing the Wagtail model's ordering, which
   is also used elsewhere.
+
+**T5 - Results screen**
+
+- What helped: used AI to scaffold `ResultsScreen.jsx` (single/ambiguous/
+  not-sure layouts, urgent-category warning, persistent escape hatch) and the
+  matching `index.css` rules — boilerplate with one obviously-correct shape
+  given the API response already built in T3.
+- What I decided: the "ambiguous" case is driven directly by the length of
+  the `matches` array the backend already returns (capped at 3 by
+  `MAX_MATCHES` in `matching.py`), rather than inventing a separate
+  front-end ambiguity heuristic — one source of truth for "how many matches
+  count as ambiguous."
+- What I verified myself: checked the "speak to an adviser" and "browse all
+  topics" links against the live site rather than guessing — confirmed
+  `/contact-us/` is real, and that there's no single all-topics hub page, so
+  "browse all topics" points at the homepage (which carries the full nav)
+  instead of a guessed `/advice-guides/`-style URL that would 404. Ran the
+  app in the browser and drove all three outcomes (single match, an
+  ambiguous free-text enquiry matching two categories at once, and the
+  explicit "Not sure" button) to confirm each renders the right heading,
+  copy, and escape hatch. Read the accessibility tree to confirm the
+  results heading receives focus after each submission, so screen-reader
+  and keyboard users land on the new content rather than having to find it.
+  Ran `npm run lint` and got a clean pass.
+- What I adjusted from the site's existing style: left-aligned the
+  category summary/next-step text (`.category-details`) instead of the
+  centered body text used elsewhere on the page — a deliberate, narrowly
+  scoped deviation, since centered multi-line paragraphs are harder to read
+  for the varying-literacy/possible-disability audience assumed in the plan.
