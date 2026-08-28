@@ -19,10 +19,11 @@ a route to a human adviser).
 - The result is never framed as legal advice or a statement of their rights.
 
 **Out of scope for v1:** case-specific advice, account creation, storing real personal
-data, a general-purpose chatbot, and park home enquiries — LEASE runs park home
-guidance as a wholly separate subsite (`parkhomes.lease-advice.org`), so triaging into
-it would mean either duplicating content I have no basis to write, or building a second
-information architecture. Left as a deliberate gap rather than a guess.
+data, a general-purpose chatbot, production-ready deployment/authentication/infrastructure,
+and park home enquiries — LEASE runs park home guidance as a wholly separate subsite
+(`parkhomes.lease-advice.org`), so triaging into it would mean either duplicating content
+I have no basis to write, or building a second information architecture. Left as a
+deliberate gap rather than a guess.
 
 ## 2. Assumptions
 
