@@ -172,3 +172,38 @@ slice, T4-T5 make it usable, T6 hardens it.
   missing-input cases to confirm real responses matched what the tests asserted,
   then confirmed the server process was actually killed afterwards rather than
   assuming a background job had stopped.
+
+**T4 - Accessible intake form**
+
+- What helped: used AI to scaffold `TriageForm.jsx` (labelled textarea, scenario
+  buttons sourced live from `/api/categories/`, validation/submit/error states)
+  and the focus-visible/error styling in `index.css` — boilerplate with one
+  obviously-correct accessible shape (real `<label>`/`<button>` elements,
+  `role="alert"` on errors, focus returned to the field on validation failure).
+- What I verified myself: read the rendered accessibility tree (not just the
+  JSX) to confirm labels, roles, and the live region were exposed correctly;
+  drove the form with clicks standing in for keyboard interaction to confirm
+  the empty-submit error appears and focus returns to the textarea, that a real
+  free-text enquiry resolves to the right category, and that the "Not sure"
+  scenario button correctly comes back as `confident: false` rather than a
+  fake match. Ran `npm run lint` and got a clean pass rather than assuming the
+  scaffolded code was lint-clean.
+- What I caught and rejected: started wiring a Ctrl/Cmd+Enter submit shortcut
+  on the textarea, but decided against adding it — an extra interaction to
+  document and test for a form with only one other required action (click
+  Check my situation) isn't worth the complexity it adds. Removed the handler
+  before it landed rather than leaving unused code from an abandoned idea in
+  the file.
+- What I decided: kept the current result rendering under the form as an
+  explicitly-labelled placeholder (raw category name/summary/next-step)
+  rather than building out the real results layout now — that's T5's job per
+  the plan's ticket split, and building it early would mean redoing work once
+  T5's actual requirements (top-2/3 ambiguous handling, persistent adviser
+  escape hatch) are in scope.
+- What I adjusted on request: moved the submit button under the textarea with
+  a small gap and centered it, reworked the page's vertical spacing to use
+  consistent flex gaps instead of ad-hoc margins, and sorted the "Not sure /
+  something else" scenario button to the end of the list instead of wherever
+  it fell alphabetically from the API response — content ordering concerns
+  handled client-side rather than changing the Wagtail model's ordering, which
+  is also used elsewhere.
