@@ -43,4 +43,20 @@ Frontend (component tests for form submission and results rendering):
 
 ## What's deliberately left out
 
-_(filled in as the build progresses)_
+- **Case-specific advice** — the tool categorises enquiries and gives a plain-English
+  next step; it never asserts a legal conclusion or a statement of rights.
+- **Account creation / storing real personal data** — no login, no persisted personal
+  data. Would need input warnings/redaction and a DPIA before any real deployment.
+- **A general-purpose chatbot** — a fixed rule-based keyword matcher (see
+  `backend/api/matching.py`), not an LLM, so it's transparent and unit-testable with no
+  hallucination risk.
+- **Park home enquiries** — LEASE runs park home guidance as a separate subsite
+  (`parkhomes.lease-advice.org`); triaging into it would mean duplicating content with
+  no basis to write it, so it's left as a deliberate gap rather than a guess.
+- **Anonymised "category chosen" event log (stretch, not built)** — would help LAS see
+  what people are actually asking about; noted as a natural next step but out of scope
+  for this slice.
+- **Production-ready deployment, authentication, or infrastructure** — this is a local
+  prototype only.
+
+See `docs/PLAN.md` for the full reasoning behind these decisions.
