@@ -2,7 +2,7 @@
 
 from django.db import migrations
 
-LEASE_GUIDE_BASE = "https://www.lease-advice.org/advice-guide"
+LEASE_GUIDE_BASE = "https://www.lease-advice.org"
 
 CATEGORIES = [
     {
