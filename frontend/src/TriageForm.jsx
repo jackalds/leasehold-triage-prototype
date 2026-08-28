@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 
 const API_BASE = "http://localhost:8000/api";
+const ADVISER_LINK = "https://www.lease-advice.org/contact-us/";
 
 function TriageForm({ onResult }) {
 	const [scenarios, setScenarios] = useState([]);
@@ -10,6 +11,7 @@ function TriageForm({ onResult }) {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const textareaRef = useRef(null);
 	const textId = useId();
+	const hintId = useId();
 	const errorId = useId();
 	const scenariosHeadingId = useId();
 
@@ -73,6 +75,10 @@ function TriageForm({ onResult }) {
 
 			<form onSubmit={handleTextSubmit} noValidate>
 				<label htmlFor={textId}>Describe your situation in your own words</label>
+				<p id={hintId} className="field-hint">
+					Please don't include personal details like your name, address, or
+					account numbers — just describe what's happening.
+				</p>
 				<textarea
 					id={textId}
 					name="text"
@@ -81,7 +87,7 @@ function TriageForm({ onResult }) {
 					value={text}
 					onChange={(event) => setText(event.target.value)}
 					aria-invalid={validationError ? "true" : undefined}
-					aria-describedby={validationError ? errorId : undefined}
+					aria-describedby={validationError ? `${hintId} ${errorId}` : hintId}
 				/>
 				{validationError && (
 					<p id={errorId} role="alert" className="field-error">
@@ -118,7 +124,12 @@ function TriageForm({ onResult }) {
 
 			{submitError && (
 				<p role="alert" className="field-error">
-					{submitError}
+					{submitError} You can also{" "}
+					<a href={ADVISER_LINK} target="_blank" rel="noreferrer">
+						speak to an adviser
+						<span className="visually-hidden"> (opens in a new tab)</span>
+					</a>
+					.
 				</p>
 			)}
 		</section>

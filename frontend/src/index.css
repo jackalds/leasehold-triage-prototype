@@ -187,6 +187,12 @@ button:focus-visible {
   font-weight: 500;
 }
 
+.field-hint {
+  color: var(--text);
+  font-size: 0.9em;
+  margin-bottom: 8px;
+}
+
 .scenarios {
   display: flex;
   flex-direction: column;
