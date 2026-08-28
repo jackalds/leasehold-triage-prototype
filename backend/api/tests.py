@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from rest_framework.test import APITestCase
 
 from .matching import match_text
@@ -41,6 +42,11 @@ class MatchTextTests(APITestCase):
 
 class TriageAPITests(APITestCase):
     """Relies on the categories seeded by api/migrations/0002_seed_categories.py."""
+
+    def setUp(self):
+        # The triage endpoint is rate-limited; clear throttle state between
+        # tests so one test's requests don't count against another's quota.
+        cache.clear()
 
     def test_requires_text_or_scenario_id(self):
         response = self.client.post("/api/triage/", {}, format="json")
@@ -88,3 +94,45 @@ class TriageAPITests(APITestCase):
 
     def test_ensure_seed_data_present(self):
         self.assertEqual(EnquiryCategory.objects.count(), 8)
+
+    def test_non_string_text_returns_400(self):
+        response = self.client.post(
+            "/api/triage/", {"text": ["not", "a", "string"]}, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_text_exceeding_max_length_returns_400(self):
+        response = self.client.post(
+            "/api/triage/", {"text": "a" * 1201}, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_whitespace_only_text_returns_not_sure(self):
+        response = self.client.post(
+            "/api/triage/", {"text": "   "}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.data["confident"])
+        self.assertEqual(response.data["matches"][0]["category"]["slug"], "not-sure")
+
+
+class TriageThrottleTests(APITestCase):
+    """Relies on the categories seeded by api/migrations/0002_seed_categories.py."""
+
+    def setUp(self):
+        cache.clear()
+
+    def tearDown(self):
+        cache.clear()
+
+    def test_exceeding_rate_limit_returns_429(self):
+        for _ in range(20):
+            response = self.client.post(
+                "/api/triage/", {"scenario_id": "not-sure"}, format="json"
+            )
+            self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(
+            "/api/triage/", {"scenario_id": "not-sure"}, format="json"
+        )
+        self.assertEqual(response.status_code, 429)

@@ -1,10 +1,18 @@
 from rest_framework import status, viewsets
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.response import Response
+from rest_framework.throttling import AnonRateThrottle
 
 from .matching import NOT_SURE_SLUG, match_text
 from .models import EnquiryCategory
 from .serializers import EnquiryCategorySerializer, TriageMatchSerializer
+
+# ~200 words at ~6 characters per word (average English word + space).
+MAX_TEXT_LENGTH = 1200
+
+
+class TriageRateThrottle(AnonRateThrottle):
+    scope = "triage"
 
 
 @api_view(["GET"])
@@ -31,6 +39,7 @@ def _not_sure_response():
 
 
 @api_view(["POST"])
+@throttle_classes([TriageRateThrottle])
 def triage(request):
     text = request.data.get("text")
     scenario_id = request.data.get("scenario_id")
@@ -38,6 +47,18 @@ def triage(request):
     if not text and not scenario_id:
         return Response(
             {"detail": "Provide either 'text' or 'scenario_id'."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if text is not None and not isinstance(text, str):
+        return Response(
+            {"detail": "'text' must be a string."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if isinstance(text, str) and len(text) > MAX_TEXT_LENGTH:
+        return Response(
+            {"detail": f"'text' must be {MAX_TEXT_LENGTH} characters or fewer."},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
