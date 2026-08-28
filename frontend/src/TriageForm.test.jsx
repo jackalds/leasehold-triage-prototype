@@ -36,6 +36,14 @@ function mockFetchSequence(...responses) {
 	return fetchMock;
 }
 
+async function submitFreeText(user) {
+	await user.type(
+		screen.getByLabelText("Describe your situation in your own words"),
+		"I got an invoice for a service charge"
+	);
+	await user.click(screen.getByRole("button", { name: "Check my situation" }));
+}
+
 describe("TriageForm", () => {
 	beforeEach(() => {
 		vi.restoreAllMocks();
@@ -97,5 +105,68 @@ describe("TriageForm", () => {
 				body: JSON.stringify({ scenario_id: "service-charges" }),
 			})
 		);
+	});
+
+	it("shows a submit error when the triage request rejects", async () => {
+		const fetchMock = vi.fn();
+		fetchMock.mockImplementationOnce(() =>
+			Promise.resolve({ ok: true, json: () => Promise.resolve(CATEGORIES) })
+		);
+		fetchMock.mockImplementationOnce(() => Promise.reject(new Error("Network error")));
+		globalThis.fetch = fetchMock;
+		const onResult = vi.fn();
+		const user = userEvent.setup();
+
+		render(<TriageForm onResult={onResult} />);
+		await screen.findByText("Service charges");
+
+		await submitFreeText(user);
+
+		expect(await screen.findByRole("alert")).toHaveTextContent(
+			"Sorry, something went wrong checking your situation. Please try again."
+		);
+		expect(onResult).not.toHaveBeenCalled();
+	});
+
+	it("shows a submit error when the triage response is not ok", async () => {
+		const fetchMock = vi.fn();
+		fetchMock.mockImplementationOnce(() =>
+			Promise.resolve({ ok: true, json: () => Promise.resolve(CATEGORIES) })
+		);
+		fetchMock.mockImplementationOnce(() =>
+			Promise.resolve({ ok: false, json: () => Promise.resolve({}) })
+		);
+		globalThis.fetch = fetchMock;
+		const onResult = vi.fn();
+		const user = userEvent.setup();
+
+		render(<TriageForm onResult={onResult} />);
+		await screen.findByText("Service charges");
+
+		await submitFreeText(user);
+
+		expect(await screen.findByRole("alert")).toHaveTextContent(
+			"Sorry, something went wrong checking your situation. Please try again."
+		);
+		expect(onResult).not.toHaveBeenCalled();
+	});
+
+	it("degrades gracefully when the categories fetch fails", async () => {
+		globalThis.fetch = vi.fn(() => Promise.reject(new Error("Network error")));
+		const onResult = vi.fn();
+
+		render(<TriageForm onResult={onResult} />);
+
+		await waitFor(() =>
+			expect(
+				screen.queryByText("Or choose a common situation")
+			).not.toBeInTheDocument()
+		);
+		expect(
+			screen.getByLabelText("Describe your situation in your own words")
+		).toBeInTheDocument();
+		expect(
+			screen.getByRole("button", { name: "Check my situation" })
+		).toBeInTheDocument();
 	});
 });
