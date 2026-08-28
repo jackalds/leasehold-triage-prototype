@@ -146,3 +146,29 @@ slice, T4-T5 make it usable, T6 hardens it.
   user-agent and got genuine `404`s. Read the live site's actual navigation in the
   browser, found the real paths (no `/advice-guide/` prefix), corrected the seed
   migration, and re-verified all 7 URLs return `200` before treating it as done.
+
+**T3 - Triage API endpoint**
+
+- What helped: used AI to scaffold the keyword matcher (`matching.py`), the
+  `POST /api/triage` view, and the `TriageMatchSerializer` — a rule-based first
+  draft that had one obviously-correct shape given the model already built in T2.
+- What I decided: confidence is a simple tiered score (0.5/0.75/0.95 by number of
+  keyword hits) rather than anything more statistical — matches the plan's stated
+  approach ("transparent, unit-testable, no hallucination risk") over a fancier
+  scoring scheme that would be harder to justify to a non-technical reviewer.
+- What I decided: picking the "not sure" scenario explicitly (`scenario_id:
+  "not-sure"`) returns `confident: false` rather than a fake 100%-confidence
+  match on the not-sure category itself — keeps the "always routes to a human"
+  rule from Part 1 true for every path through the endpoint, not just the
+  free-text no-match path.
+- What I verified myself: ran the Django test suite (13 tests: matcher scoring/
+  ranking/no-match cases, plus API happy path, no-match, scenario_id, and error
+  cases) and got a real `OK`, not just read the test file. Caught that my first
+  test draft tried to create categories with slugs the seed migration
+  (`0002_seed_categories`) already inserts into the test DB, causing a
+  `UNIQUE constraint failed` — rewrote the tests to use the seeded categories
+  directly instead of masking the collision. Also started the dev server and hit
+  `/api/triage/` with curl for the happy-path, no-match, scenario_id, and
+  missing-input cases to confirm real responses matched what the tests asserted,
+  then confirmed the server process was actually killed afterwards rather than
+  assuming a background job had stopped.
