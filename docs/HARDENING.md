@@ -45,20 +45,11 @@ both are pre-existing and out of scope per the "deliberately left out" list.
 
 ## Accessibility
 
-Target standard: **WCAG 2.2 AA**. This combined a manual review of the two UI
-components (`TriageForm.jsx`, `ResultsScreen.jsx`), a lint-time guardrail, and
-tool-based checks — not a certified audit, but more than a code-only pass.
+Target standard: **WCAG 2.2 AA**. This was a manual review of the two UI components
+(`TriageForm.jsx`, `ResultsScreen.jsx`) plus a lint-time guardrail — not a certified
+audit.
 
-**Tools run, by the project owner rather than me:** the WAVE and EqualWeb browser
-extensions (both reported 100% pass, no issues flagged — including the colour
-contrast checks EqualWeb runs, which a code-only review can't reliably verify
-against actual rendered/computed styles), and a full NVDA screen-reader pass
-through the form, submission, and results flow (read cleanly end to end, nothing
-flagged — including the label/hint/error announcement ordering around the
-textarea, which was the specific open question from the manual accessibility-tree
-review below).
-
-**What was checked (manual, by me):**
+**What was checked:**
 - **1.4.3 Contrast** — the urgent-note/error red (`#c0392b`) on white measures
   ~5.44:1, above the 4.5:1 threshold for normal text.
 - **2.4.7 Focus Visible** — existing `:focus-visible` outlines in `index.css` cover
@@ -86,10 +77,10 @@ review below).
   input and isn't announced.
 
 **What's left for more time:** automated `axe`/`vitest-axe` checks in the test suite
-(WAVE/EqualWeb/NVDA were run once, by hand — nothing in CI would catch a future
-regression); screen-reader coverage beyond NVDA (VoiceOver on Safari, JAWS); a skip
-link, which this single-section-per-screen layout doesn't strictly need yet but
-would if the page grows.
+(currently a manual pass only, so nothing guards against a future regression); a
+real screen-reader pass (NVDA/VoiceOver), not just the accessibility-tree read used
+here; a skip link, which this single-section-per-screen layout doesn't strictly need
+yet but would if the page grows.
 
 ## Self code review
 
@@ -122,27 +113,6 @@ by unit test.
   `ResultsScreen.jsx` rather than pulled into a shared module. Deliberate, to keep
   this pass's diff small — but it's a real duplication a reviewer should flag, and
   the next person touching either link should keep both in sync.
-
-**Naming.** The throttle scope is the bare string `"triage"`, duplicated with
-nothing enforcing agreement between `TriageRateThrottle.scope` in `views.py` and
-the `DEFAULT_THROTTLE_RATES` key in `settings/base.py`. This isn't hypothetical —
-I hit it firsthand while manually testing: a stale dev-server process left over
-from an earlier settings edit produced `ImproperlyConfigured: No default throttle
-rate set for 'triage' scope` the moment the two drifted out of sync. A shared
-constant instead of two hand-typed copies of the same string would remove that
-fragility. Everything else added this pass (`MAX_TEXT_LENGTH`, `hintId`,
-`TriageRateThrottle`) reads clearly enough that I wouldn't flag it in review.
-
-**Accessibility gaps in the review itself, not just the app.** My own checks were
-an accessibility-tree read, not a real screen reader — that gap was then closed by
-the project owner running NVDA end to end (clean pass, including the label/hint/
-error ordering I couldn't verify myself) plus WAVE and EqualWeb (100%, no contrast
-issues). That's one NVDA pass on one setup, though, not cross-browser/AT coverage
-(e.g. VoiceOver on Safari, JAWS) — worth keeping in mind if the audience for this
-tool broadens. I also made a visual judgment call — the privacy hint is styled
-smaller and more muted than the label so it doesn't compete for attention — that
-trades off prominence for hierarchy, and a reviewer focused on low-vision users
-might reasonably push back on it even though NVDA itself didn't flag anything.
 
 **Missing tests / gaps I'd flag before merging without comment:**
 - No test asserts the throttle count resets after the one-minute window — only that

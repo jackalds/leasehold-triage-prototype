@@ -1,34 +1,22 @@
 :root {
-  /* Palette lifted from lease-advice.org: navy brand, cyan hero tint, coral accent. */
-  --text: #46465a;
-  --text-h: #313131;
+  --text: #6b6375;
+  --text-h: #08060d;
   --bg: #fff;
-  --bg-alt: #f1f0ee;
-  --bg-hero: color-mix(in srgb, var(--brand-cyan) 22%, white);
-  --border: #e3e1de;
-
-  /* Adaptive: readable as text/links/borders on the page background. */
-  --brand-navy: #003c71;
-  --brand-navy-hover: #002443;
-  /* Constant: the solid brand-navy block colour (header bar), same in both themes. */
-  --brand-navy-fill: #003c71;
-  --brand-cyan: #77d5ea;
-  --brand-accent: #d01f4d;
-
-  --code-bg: var(--bg-alt);
-  --accent: var(--brand-navy);
-  --accent-bg: color-mix(in srgb, var(--brand-navy) 8%, white);
-  --accent-border: color-mix(in srgb, var(--brand-navy) 40%, white);
+  --border: #e5e4e7;
+  --code-bg: #f4f3ec;
+  --accent: #aa3bff;
+  --accent-bg: rgba(170, 59, 255, 0.1);
+  --accent-border: rgba(170, 59, 255, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
-  --sans: 'DM Sans', system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: 'DM Sans', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
-  letter-spacing: 0.1px;
+  letter-spacing: 0.18px;
   color-scheme: light dark;
   color: var(--text);
   background: var(--bg);
@@ -44,23 +32,14 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #a9b1c4;
+    --text: #9ca3af;
     --text-h: #f3f4f6;
-    --bg: #0d1b2a;
-    --bg-alt: #122336;
-    --bg-hero: #0f2a3d;
-    --border: #1f3350;
-
-    --brand-navy: #6fb2ea;
-    --brand-navy-hover: #9cc9f0;
-    --brand-navy-fill: #003c71;
-    --brand-cyan: #77d5ea;
-    --brand-accent: #ff7a90;
-
-    --code-bg: var(--bg-alt);
-    --accent: var(--brand-navy);
-    --accent-bg: color-mix(in srgb, var(--brand-navy) 20%, var(--bg));
-    --accent-border: color-mix(in srgb, var(--brand-navy) 50%, var(--bg));
+    --bg: #16171d;
+    --border: #2e303a;
+    --code-bg: #1f2028;
+    --accent: #c084fc;
+    --accent-bg: rgba(192, 132, 252, 0.15);
+    --accent-border: rgba(192, 132, 252, 0.5);
     --social-bg: rgba(47, 48, 58, 0.5);
     --shadow:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
@@ -90,16 +69,17 @@ body {
 h1,
 h2 {
   font-family: var(--heading);
-  font-weight: 700;
+  font-weight: 500;
   color: var(--text-h);
 }
 
 h1 {
-  font-size: 32px;
-  letter-spacing: -0.32px;
-  margin: 0;
+  font-size: 56px;
+  letter-spacing: -1.68px;
+  margin: 32px 0;
   @media (max-width: 1024px) {
-    font-size: 26px;
+    font-size: 36px;
+    margin: 20px 0;
   }
 }
 h2 {
@@ -115,49 +95,12 @@ p {
   margin: 0;
 }
 
-a {
-  color: var(--brand-navy);
-  font-weight: 600;
-}
-
-a:hover {
-  color: var(--brand-navy-hover);
-}
-
-a:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-.app-header {
-  width: 100%;
-  box-sizing: border-box;
-  background: var(--brand-navy-fill);
-  padding: 28px 20px;
-}
-
-.app-header h1 {
-  color: #fff;
-}
-
-.badge {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-}
-
 main {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 40px;
-  padding: 24px 20px 40px;
+  padding: 0 20px 40px;
 }
 
 section {
@@ -167,17 +110,6 @@ section {
   gap: 24px;
   width: 100%;
   max-width: 560px;
-}
-
-.hero-band {
-  background: var(--bg-hero);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 32px 24px;
-  box-sizing: border-box;
-  @media (max-width: 1024px) {
-    padding: 24px 16px;
-  }
 }
 
 form {
@@ -214,10 +146,7 @@ textarea {
   width: 100%;
   max-width: 480px;
   font: inherit;
-  /* Explicit, not inherited: the browser's default dark-mode form-control
-     fill is a neutral grey that clashes with the navy/cyan palette here. */
-  color: var(--text-h);
-  background: #fff;
+  color: inherit;
   padding: 10px 12px;
   border-radius: 6px;
   border: 1px solid var(--border);
@@ -225,59 +154,26 @@ textarea {
 }
 
 textarea[aria-invalid="true"] {
-  border-color: var(--brand-accent);
+  border-color: #c0392b;
+}
+
+form button[type="submit"] {
+  display: block;
 }
 
 button {
   font: inherit;
-  font-weight: 600;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--code-bg);
   color: var(--text-h);
   padding: 8px 16px;
-  transition: background-color 0.15s, border-color 0.15s;
 }
 
 button:disabled {
   cursor: not-allowed;
   opacity: 0.6;
-}
-
-form button[type="submit"] {
-  display: block;
-  background: var(--brand-accent);
-  color: #fff;
-  border: none;
-  padding: 10px 24px;
-}
-
-form button[type="submit"]:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--brand-accent) 85%, black);
-}
-
-.scenarios button {
-  background: var(--bg);
-  border: 1.5px solid var(--brand-navy);
-  color: var(--brand-navy);
-}
-
-.scenarios button:hover:not(:disabled) {
-  background: var(--accent-bg);
-}
-
-@media (prefers-color-scheme: dark) {
-  /* --brand-accent/--brand-navy are lightened for dark-mode legibility as
-     text/borders on the dark page background; used as a button fill they'd
-     need a dark label instead of the light one that works everywhere else. */
-  form button[type="submit"] {
-    color: var(--bg);
-  }
-
-  textarea {
-    background: var(--bg-alt);
-  }
 }
 
 textarea:focus-visible,
@@ -287,8 +183,8 @@ button:focus-visible {
 }
 
 .field-error {
-  color: var(--brand-accent);
-  font-weight: 600;
+  color: #c0392b;
+  font-weight: 500;
 }
 
 .field-hint {
@@ -323,13 +219,12 @@ button:focus-visible {
 .category-details h3 {
   color: var(--text-h);
   font-size: 18px;
-  font-weight: 700;
   margin: 0;
 }
 
 .urgent-note {
-  color: var(--brand-accent);
-  font-weight: 600;
+  color: #c0392b;
+  font-weight: 500;
 }
 
 .ambiguous-matches {
