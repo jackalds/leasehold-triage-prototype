@@ -59,8 +59,10 @@ textarea, which was the specific open question from the manual accessibility-tre
 review below).
 
 **What was checked (manual, by me):**
-- **1.4.3 Contrast** — the urgent-note/error red (`#c0392b`) on white measures
-  ~5.44:1, above the 4.5:1 threshold for normal text.
+- **1.4.3 Contrast** — the urgent-note/error colour on white measures ~5.27:1
+  (originally `#c0392b` at ~5.44:1; now the brand coral `#d01f4d` after the
+  later visual restyle — re-checked at that point, still clears 4.5:1 for
+  normal text).
 - **2.4.7 Focus Visible** — existing `:focus-visible` outlines in `index.css` cover
   every interactive element touched this pass (textarea, buttons, the new links).
 - **2.4.11 Focus Not Obscured** *(new in 2.2)* — no fixed/sticky content exists in

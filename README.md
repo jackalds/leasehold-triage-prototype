@@ -2,7 +2,9 @@
 
 A small prototype letting someone describe a leasehold question in their own words and
 get a plain-English next step. Built for the Leasehold Advisory Service take-home
-exercise — see `docs/PLAN.md` for the full planning pack.
+exercise — see `docs/PLAN.md` for the full planning pack and `docs/HARDENING.md` for
+the Part 3 hardening & review notes (personal data/security, accessibility, self
+code review).
 
 ## Prerequisites
 

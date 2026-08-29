@@ -77,7 +77,19 @@ deliberate gap rather than a guess.
 Tickets are ordered so each is independently demoable — T1-T3 give a working backend
 slice, T4-T5 make it usable, T6 hardens it.
 
+**Part 3 (harden & review):** a follow-up pass over this already-complete slice,
+addressing the risks below directly — see `docs/HARDENING.md` for what changed and
+the required personal-data/accessibility/self-review write-up.
+
 ## 4. Risks
+
+_Update (Part 3): the testing, accessibility, personal-data, and security risks below
+were the direct input to a dedicated hardening pass — see `docs/HARDENING.md` for what
+was actually fixed (input validation, rate limiting, a jsx-a11y guardrail, a privacy
+hint on the free-text field, an escape hatch on the error state) and what's still
+open (verbose-logging exposure if ever enabled, `production.py` config, the T7 event
+log). The advice-boundary risk below was not revisited in Part 3 — it was already
+addressed by the escape-hatch behaviour built in T5._
 
 - **Testing:** the matcher is rule-based, so it's easy to unit test — but brittle to
   phrasing. A reviewer should check the _false-negative_ rate (real enquiries that get
@@ -271,3 +283,56 @@ slice, T4-T5 make it usable, T6 hardens it.
 - Documented the run commands for both suites in the README rather than
   leaving them implicit, per the ticket's "Documented run commands"
   requirement.
+
+**Part 3 - Harden & review**
+
+- What helped: used AI to draft the fixes for the risks named in section 4 —
+  a type/length guard on the triage endpoint's free-text input, a scoped
+  rate throttle, the `eslint-plugin-jsx-a11y` wiring, the privacy hint above
+  the textarea, and the adviser link on the form's error state — each a
+  small, targeted change traceable to a specific risk already written down,
+  not a speculative rewrite.
+- What I verified myself: ran `python manage.py test` (21 tests) and
+  `npm run test` (12 tests) and got real passes, not just read the diffs;
+  drove the app in a live browser to confirm the privacy hint renders, the
+  new-tab link labelling shows up in the accessibility tree, and the error
+  state's adviser link actually works when the backend is stopped.
+- What I caught and fixed: installing `eslint-plugin-jsx-a11y` with
+  `--legacy-peer-deps` (its peer range predates this project's ESLint 10)
+  silently dropped `@testing-library/dom`, which is only ever installed as
+  an auto-resolved peer of `@testing-library/react` — broke the whole test
+  suite until caught by re-running the tests after the install. Reverted
+  and reinstalled with `--force` instead, which doesn't disable peer
+  auto-install; tests and lint both came back clean.
+- What I caught and fixed: while manually testing the new rate limit in a
+  live browser, hit a genuine `500 ImproperlyConfigured` — turned out a
+  stale dev-server process from an earlier run was still bound to port
+  8000 and serving requests instead of the freshly-restarted one with the
+  new `REST_FRAMEWORK` throttle settings. Killed the stale process,
+  confirmed a single clean listener, and re-verified the throttle actually
+  returns `429` rather than assuming the first 500 meant the code was wrong.
+- What I decided: scoped the accessibility target to WCAG 2.2 AA on request,
+  including the two success criteria new in 2.2 that are actually relevant
+  here (2.5.8 Target Size, 3.2.6 Consistent Help — the latter directly
+  motivated giving the error state the same adviser escape hatch the
+  results screen already had).
+- What the human verified beyond the AI-assisted checks: ran the WAVE and
+  EqualWeb browser extensions (100% pass, including colour contrast, which
+  a code-only review can't reliably confirm against real rendered styles)
+  and a full NVDA screen-reader pass through the form, submission, and
+  results flow — clean end to end, including the label/hint/error
+  announcement ordering that a static accessibility-tree read can't fully
+  settle on its own.
+- Separately, restyled the frontend to mirror lease-advice.org's visual
+  identity (navy/cyan/coral palette sampled from the live site, DM Sans,
+  a branded header bar, a cyan-tinted hero band) on request, after the
+  hardening pass proper. What I caught and fixed along the way: the header
+  bar initially picked up the *lightened* dark-mode navy meant for
+  text/link contrast rather than staying a solid brand block, turning it
+  light blue in dark mode; the scenario buttons' hardcoded white background
+  combined with the lightened dark-mode navy text would have measured
+  ~2.3:1 contrast (caught by hand-computing the luminance, not by tooling);
+  and the free-text textarea was falling back to the browser's default
+  dark-mode form-control grey instead of the themed navy. All three fixed
+  and re-verified visually in both colour schemes before treating the
+  restyle as done.
