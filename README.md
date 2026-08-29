@@ -6,6 +6,27 @@ exercise — see `docs/PLAN.md` for the full planning pack and `docs/HARDENING.m
 the Part 3 hardening & review notes (personal data/security, accessibility, self
 code review).
 
+**Paul Ferreira — 29 August 2026**
+
+## What's built
+
+- A React frontend where someone describes their situation in free text, or picks one
+  of seven common scenario buttons (service charges, ground rent, major works/Section
+  20, lease extension, right to manage, repairs, breach of lease/forfeiture).
+- A Django/DRF backend (`POST /api/triage`) that scores free text against each
+  category's keywords using a transparent, rule-based matcher — no LLM — and returns
+  either a confident match, a couple of ambiguous possibilities, or an explicit
+  "not sure" outcome.
+- A results screen giving a plain-English summary and one clear next step per
+  category, with a persistent "speak to an adviser" / "browse all topics" escape
+  hatch on every outcome, and an extra urgency note for time-sensitive categories
+  (e.g. forfeiture threats).
+- Category content (name, summary, next step, keywords, guide link) lives in Wagtail
+  as an editable snippet, so it can be updated without a code change.
+- Automated backend and frontend test suites, and a follow-up hardening pass (input
+  validation, rate limiting, accessibility guardrails, privacy-conscious copy) — see
+  `docs/HARDENING.md`.
+
 ## Prerequisites
 
 - Python 3.x
