@@ -70,7 +70,7 @@ function TriageForm({ onResult }) {
 	}
 
 	return (
-		<section aria-labelledby="triage-heading">
+		<section aria-labelledby="triage-heading" className="hero-band">
 			<h2 id="triage-heading">Tell us what's going on</h2>
 
 			<form onSubmit={handleTextSubmit} noValidate>
