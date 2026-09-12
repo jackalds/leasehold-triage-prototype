@@ -51,6 +51,11 @@ Runs at http://localhost:8000 — health check at http://localhost:8000/api/heal
 
 Runs at http://localhost:5173
 
+`npm install` may fail with an `ERESOLVE` error from `eslint-plugin-jsx-a11y`, whose
+peer-dependency range doesn't yet cover this project's ESLint 10. If so, run
+`npm install --force` instead — not `--legacy-peer-deps`, which silently drops
+`@testing-library/dom` and breaks the test suite (see `docs/HARDENING.md`).
+
 ## Running the tests
 
 Backend (matcher unit tests + API tests — happy path, no-match, scenario id):
